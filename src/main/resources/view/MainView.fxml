@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tablereader.controller.MainViewController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem fx:id="menuItemOpen" mnemonicParsing="false" onAction="#onMenuItemOpen" text="Open">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="menuItemExit" mnemonicParsing="false" onAction="#onMenuItemExit" text="Exit">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuExport" mnemonicParsing="false" text="Export">
+                    <items>
+                        <MenuItem fx:id="menuItemTXTExport" mnemonicParsing="false" onAction="#onMenuItemTXTExport" text="to TXT" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="menuItemXLSExport" mnemonicParsing="false" onAction="#onMenuItemXLSExport" text="to XLS" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="menuItemXLSXExport" mnemonicParsing="false" onAction="#onMenuItemXLSXExport" text="to XLSX" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="menuItemSQLExport" mnemonicParsing="false" onAction="#onMenuItemSQLExport" text="to SQL" />
+                    </items>
+                </Menu>
+                <Menu fx:id="menuView" mnemonicParsing="false" text="View">
+                    <items>
+                        <MenuItem fx:id="menuItemFilter" mnemonicParsing="false" onAction="#onMenuItemFilter" text="Filter">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="menuItemTableInfo" mnemonicParsing="false" onAction="#onMenuItemTableInfo" text="Table info">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help" visible="false">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+</BorderPane>
