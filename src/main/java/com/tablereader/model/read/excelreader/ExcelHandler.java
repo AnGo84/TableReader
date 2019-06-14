@@ -1,7 +1,10 @@
 package com.tablereader.model.read.excelreader;
 
+import com.tablereader.controller.TableViewController;
 import com.tablereader.model.Field;
 import com.tablereader.model.TableData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ExcelHandler {
-
+    private static final Logger logger = LogManager.getLogger(ExcelHandler .class);
     public Workbook getWorkbook(File file, String fileExtension)
             throws IOException {
         FileInputStream inputStream = new FileInputStream(file);
@@ -115,8 +118,12 @@ public class ExcelHandler {
                 Cell cell = cellIterator.next();
 
                 //String cellValue = getCellStringValue(cell);
-
-                row[colNum] = cell.getStringCellValue();
+                try {
+                    //row[colNum] = cell.getStringCellValue();
+                    row[colNum] = getCellStringValue(cell);
+                }catch (Exception e){
+                    logger.error("Error on colNum " + colNum + " for CELL " + cell.getAddress()+ " " + cell);
+                }
                 colNum++;
             }
             rowsList.add(row);

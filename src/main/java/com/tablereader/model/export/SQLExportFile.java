@@ -49,11 +49,13 @@ public class SQLExportFile extends AbstractExportFile {
     private String getDataString(String[] data) {
         String dataString = "";
         for (String sData : data) {
-            String s = getShieldingString(sData.trim());
-            if (dataString.equals("")) {
-                dataString = "\'" + s + "\'";
-            } else {
-                dataString += ",\'" + s + "\'";
+            if(sData!=null) {
+                String s = getShieldingString(sData.trim());
+                if (dataString.equals("")) {
+                    dataString = "\'" + s + "\'";
+                } else {
+                    dataString += ",\'" + s + "\'";
+                }
             }
         }
         return dataString;
