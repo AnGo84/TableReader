@@ -1,5 +1,6 @@
 package com.tablereader.file;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.File;
@@ -35,7 +36,8 @@ public class FileUtils {
 
     public static String getFileEncodingOrDefault(File file, String defaultEncoding) {
         try {
-            return getFileEncoding(file);
+            String encoding = getFileEncoding(file);
+            return StringUtils.isBlank(encoding) ? defaultEncoding : encoding;
 
         } catch (IOException e) {
             return defaultEncoding;

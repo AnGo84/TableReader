@@ -22,4 +22,4 @@ formats.
 
 ### **TODO:**
 
-Add tests
+Add code coverage

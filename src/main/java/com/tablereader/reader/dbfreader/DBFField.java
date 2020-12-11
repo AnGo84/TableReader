@@ -1,8 +1,10 @@
 package com.tablereader.reader.dbfreader;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class DBFField {
     private int id;
     private String name;

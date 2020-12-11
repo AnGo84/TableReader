@@ -118,3 +118,5 @@ hs_err_pid*
 # Project logs
 logs/
 # End of https://www.gitignore.io/api/java,intellij
+/logs/
+/.idea/libraries/
