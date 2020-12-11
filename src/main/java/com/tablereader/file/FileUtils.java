@@ -33,6 +33,15 @@ public class FileUtils {
         return encoding;
     }
 
+    public static String getFileEncodingOrDefault(File file, String defaultEncoding) {
+        try {
+            return getFileEncoding(file);
+
+        } catch (IOException e) {
+            return defaultEncoding;
+        }
+    }
+
     public static String getFileExtension(File file) {
         String fileName = file.getName();
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)

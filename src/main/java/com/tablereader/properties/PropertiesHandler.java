@@ -3,9 +3,6 @@ package com.tablereader.properties;
 import java.io.*;
 import java.util.Properties;
 
-/**
- * Created by AnGo on 23.01.2018.
- */
 public class PropertiesHandler {
 
     public static Properties getPropertiesFromFile(File file) throws IOException {
@@ -14,11 +11,9 @@ public class PropertiesHandler {
         }
         Properties properties = new Properties();
         if (!file.exists()) {
-            //System.out.println("Create file: " +file.getPath());
             file.createNewFile();
         } else {
             try (InputStream inputStream = new FileInputStream(file)) {
-                //System.out.println("Read file: " +file.getPath());
                 properties.load(inputStream);
             }
         }
@@ -44,7 +39,6 @@ public class PropertiesHandler {
     }
 
     public static String toString(Properties properties) {
-
         final StringBuilder sb = new StringBuilder("Properties{").append("\n");
         for (final String name : properties.stringPropertyNames()) {
             sb.append(name).append(" : ").append(properties.getProperty(name)).append("\n");

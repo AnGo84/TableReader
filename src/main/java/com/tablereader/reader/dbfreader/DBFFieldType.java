@@ -1,8 +1,5 @@
-package com.tablereader.model.read.dbfreader;
+package com.tablereader.reader.dbfreader;
 
-/**
- * Created by AnGo on 05.03.2017.
- */
 public enum DBFFieldType {
     C("character"), D("date"), F("float"), L("logic"), N("numeric");
 

@@ -132,13 +132,10 @@ public class TableViewController {
         labelFilterInfo.setVisible(true);
         labelFilterInfo.setText(NOT_OPEN_FILE);
 
-
-
         anchorPaneFilterInfo.managedProperty().bind(anchorPaneFilterInfo.visibleProperty());
 
         tableView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showRowFields(newValue));
-
 
         tableView.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -255,7 +252,6 @@ public class TableViewController {
         }
     }
 
-
     public void showRowFields(String[] rowFields) {
         if (this.fields != null && !this.fields.isEmpty()) {
             buttonViewRow.setDisable(false);
@@ -275,7 +271,6 @@ public class TableViewController {
         }
 
     }
-
 
     public void onButtonFirst(ActionEvent actionEvent) {
         tableView.getSelectionModel().selectFirst();
@@ -310,10 +305,7 @@ public class TableViewController {
     public void onButtonFilter(ActionEvent actionEvent) {
         if (tableData != null) {
             filterText = "";
-            labelFilterInfo.setText("");
 
-
-            //String[] filters = mainApp.getTableViewController().getFilters();
             if ((filters = mainApp.showTableFilterView(fields, filters)) != null) {
 
                 filteredList = new ArrayList<>();
@@ -327,18 +319,13 @@ public class TableViewController {
 
                 if (!(filterText = getFilterText(filters)).equals("")) {
                     tabPaneTable.getSelectionModel().select(0);
-                    anchorPaneFilterInfo.setVisible(true);
-                    labelFilterInfo.setText(filterText);
-                } else {
-                    labelFilterInfo.setText("");
-                    anchorPaneFilterInfo.setVisible(false);
                 }
-
                 tableView.setItems(setTableViewDate(filteredList));
             } else {
                 tableView.setItems(setTableViewDate(recordsList));
-                anchorPaneFilterInfo.setVisible(false);
             }
+            labelFilterInfo.setText(filterText);
+            anchorPaneFilterInfo.setVisible(!filterText.equals(""));
         }
 
     }

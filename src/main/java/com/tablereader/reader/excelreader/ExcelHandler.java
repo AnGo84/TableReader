@@ -1,8 +1,8 @@
-package com.tablereader.model.read.excelreader;
+package com.tablereader.reader.excelreader;
 
-import com.tablereader.controller.TableViewController;
 import com.tablereader.model.Field;
 import com.tablereader.model.TableData;
+import com.tablereader.reader.AllowedFileType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,15 +20,16 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ExcelHandler {
-    private static final Logger logger = LogManager.getLogger(ExcelHandler .class);
-    public Workbook getWorkbook(File file, String fileExtension)
-            throws IOException {
-        FileInputStream inputStream = new FileInputStream(file);
-        Workbook workbook = null;
+    public static final int DEFAULT_FIELD_LENGTH = 50;
+    public static final String FIELD_NAME_PREFIX = "Field_";
+    private static final Logger logger = LogManager.getLogger(ExcelHandler.class);
 
-        if (fileExtension.toUpperCase().equals("XLSX")) {
+    public Workbook getWorkbook(File file, String fileExtension) throws IOException {
+        FileInputStream inputStream = new FileInputStream(file);
+        Workbook workbook;
+        if (fileExtension.equalsIgnoreCase(AllowedFileType.XLSX.getType())) {
             workbook = new XSSFWorkbook(inputStream);
-        } else if (fileExtension.toUpperCase().equals("XLS")) {
+        } else if (fileExtension.equalsIgnoreCase(AllowedFileType.XLS.getType())) {
             workbook = new HSSFWorkbook(inputStream);
         } else {
             throw new IllegalArgumentException("The specified file is not Excel file");
@@ -36,7 +37,6 @@ public class ExcelHandler {
 
         return workbook;
     }
-
 
     public List<Field> getFieldList(Workbook workbook) {
         if (workbook == null) {
@@ -52,24 +52,35 @@ public class ExcelHandler {
             Iterator<Cell> cellIterator = nextRow.cellIterator();
             int colNum = 0;
             while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-
-                String cellValue = getCellStringValue(cell);
-                System.out.print(cellValue);
-
-                Field field = new Field();
-                field.setId(colNum);
-                //field.setName(cell.getStringCellValue());
-                field.setName("Field_" + (colNum + 1));
-                field.setFieldType(cell.getCellTypeEnum().name());
-                field.setLength(50);
-
+                fields.add(getFieldFromCell(cellIterator.next(), colNum));
                 colNum++;
-                fields.add(field);
             }
             break;
         }
         return fields;
+    }
+
+    private Field getFieldFromCell(Cell cell, int colNum) {
+        Field field = Field.builder().id(colNum)
+                .name(generateFieldName(colNum))
+                .fieldType(cell.getCellType().name())
+                .length(DEFAULT_FIELD_LENGTH)
+                .build();
+        return field;
+    }
+
+    private String generateFieldName(int colNum) {
+        return FIELD_NAME_PREFIX + (colNum + 1);
+    }
+
+    public TableData getTableData(File file, String fileExtension) throws IOException {
+
+        Workbook workbook = getWorkbook(file, fileExtension);
+
+        TableData tableData = getTableData(workbook);
+
+        workbook.close();
+        return tableData;
     }
 
     private String getCellStringValue(Cell cell) {
@@ -116,10 +127,7 @@ public class ExcelHandler {
             int colNum = 0;
             while (cellIterator.hasNext() && colNum < fieldsCount) {
                 Cell cell = cellIterator.next();
-
-                //String cellValue = getCellStringValue(cell);
                 try {
-                    //row[colNum] = cell.getStringCellValue();
                     row[colNum] = getCellStringValue(cell);
                 }catch (Exception e){
                     logger.error("Error on colNum " + colNum + " for CELL " + cell.getAddress()+ " " + cell);
@@ -135,6 +143,7 @@ public class ExcelHandler {
     public TableData getTableData(Workbook workbook) {
         List<Field> fieldList = getFieldList(workbook);
         List<String[]> rowsList = getRowsList(workbook, fieldList.size());
-        return new TableData(fieldList, rowsList);
+        return TableData.builder().fields(fieldList)
+                .data(rowsList).build();
     }
 }

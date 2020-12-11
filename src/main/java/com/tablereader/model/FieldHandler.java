@@ -1,17 +1,17 @@
 package com.tablereader.model;
 
-import com.tablereader.model.read.dbfreader.DBFField;
+import com.tablereader.reader.dbfreader.DBFField;
 
 public class FieldHandler {
-    public static Field getField(DBFField dbfField){
-        if (dbfField==null){
+    public static Field getField(DBFField dbfField) {
+        if (dbfField == null) {
             return null;
         }
-        Field field = new Field();
-        field.setId(dbfField.getId());
-        field.setName(dbfField.getName());
-        field.setFieldType(dbfField.getFieldType().getType());
-        field.setLength(dbfField.getLength());
-        return field;
+        return Field.builder()
+                .id(dbfField.getId())
+                .name(dbfField.getName())
+                .fieldType(dbfField.getFieldType().getType())
+                .length(dbfField.getLength())
+                .build();
     }
 }

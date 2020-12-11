@@ -1,26 +1,20 @@
-package com.tablereader.model.read.dbfreader;
+package com.tablereader.reader.dbfreader;
 
 import com.tablereader.file.FileUtils;
-
-
 import com.tablereader.model.Field;
 import com.tablereader.model.FieldHandler;
 import com.tablereader.model.TableData;
 import com.tablereader.model.TableFile;
-import com.tablereader.model.read.AbstractReader;
+import com.tablereader.reader.AbstractReader;
 import org.jamel.dbf.DbfReader;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by AnGo on 04.03.2017.
- */
 public class DBFReader extends AbstractReader {
     private static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String DEFAULT_CHARSET = "cp866";
@@ -31,11 +25,15 @@ public class DBFReader extends AbstractReader {
         if (dbfReader != null) {
             for (int i = 0; i < dbfReader.getHeader().getFieldsCount(); i++) {
                 dbfFieldList.add(new DBFField(i, dbfReader.getHeader().getField(i).getName(),
-                        DBFFieldType.valueOf(String.valueOf((char) (dbfReader.getHeader().getField(i).getDataType()))),
+                        DBFFieldType.valueOf(getDBFFieldTypeName(dbfReader, i)),
                         dbfReader.getHeader().getField(i).getFieldLength()));
             }
         }
         return dbfFieldList;
+    }
+
+    private String getDBFFieldTypeName(DbfReader dbfReader, int i) {
+        return String.valueOf((char) (dbfReader.getHeader().getField(i).getDataType().byteValue));
     }
 
     public List<String[]> getRecordsList(DbfReader dbfReader, String encoding) {
@@ -48,18 +46,15 @@ public class DBFReader extends AbstractReader {
                 String[] record = new String[dbfReader.getHeader().getFieldsCount()];
                 for (int i = 0; i < row.length; i++) {
                     String elem = "";
-                    switch (DBFFieldType.valueOf(String.valueOf((char) dbfReader.getHeader().getField(i).getDataType()))) {
+                    switch (DBFFieldType.valueOf(getDBFFieldTypeName(dbfReader, i))) {
 
                         case C:
-                            //elem = new String((byte[]) row[i], Charset.forName("cp866"));
-
                             elem = new String((byte[]) row[i], Charset.forName(charset));
 
                             break;
                         case D:
                             String d = simpleDateFormat.format((Date) row[i]);
                             elem = d.equals("06.10.17793") ? "" : d;
-                            // elem = new String(String.valueOf(row[i]));
                             break;
                         default:
                             elem = String.valueOf(row[i]);
@@ -83,6 +78,10 @@ public class DBFReader extends AbstractReader {
         return fields;
     }
 
+    public List<Field> getFieldList(DbfReader dbfReader) {
+        return getFieldList(getHeadFields(dbfReader));
+    }
+
     @Override
     public TableData read(File file) {
         TableData tableData = read(file, null);
@@ -96,8 +95,10 @@ public class DBFReader extends AbstractReader {
         }
 
         DbfReader dbfReader = new DbfReader(file);
-        TableData tableData = new TableData(getFieldList(getHeadFields(dbfReader)), getRecordsList(dbfReader, encoding));
-        return tableData;
+        return TableData.builder()
+                .fields(getFieldList(dbfReader))
+                .data(getRecordsList(dbfReader, encoding))
+                .build();
     }
 
     @Override
@@ -105,21 +106,14 @@ public class DBFReader extends AbstractReader {
         if (file == null) {
             return null;
         }
-        TableFile tableFile = new TableFile();
-        tableFile.setExtension(FileUtils.getFileExtension(file));
-
-        String encoding;
-        try {
-            encoding = FileUtils.getFileEncoding(file);
-
-        } catch (IOException e) {
-            encoding = DEFAULT_CHARSET;
-        }
-        tableFile.setEncoding(encoding);
-        tableFile.setFile(file);
-
+        String encoding = FileUtils.getFileEncodingOrDefault(file, DEFAULT_CHARSET);
         TableData tableData = read(file, encoding);
-        tableFile.setTableData(tableData);
-        return tableFile;
+
+        return TableFile.builder()
+                .file(file)
+                .tableData(tableData)
+                .encoding(encoding)
+                .extension(FileUtils.getFileExtension(file))
+                .build();
     }
 }

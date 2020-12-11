@@ -12,9 +12,6 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-/**
- * Created by AnGo on 07.03.2017.
- */
 public class TableFilterViewController {
     @FXML
     private GridPane gridPane;
@@ -70,7 +67,6 @@ public class TableFilterViewController {
         for (Field dbfField : fields) {
             TextField textField = (TextField) gridPane.lookup("#field" + dbfField.getName());
             if (textField != null) {
-//                Dialogs.showMessage(Alert.AlertType.INFORMATION,"Field name"+ dbfField.getName(), "",textField.getText());
                 filterString[dbfField.getId()] = textField.getText();
             }
         }

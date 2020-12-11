@@ -1,14 +1,11 @@
-package com.tablereader.model.read;
+package com.tablereader.reader;
 
-/**
- * Created by AnGo on 27.01.2018.
- */
-public enum ReadFileType {
+public enum AllowedFileType {
     DBF("dbf"), XLS("xls"), XLSX("xlsx");
 
     private String type;
 
-    ReadFileType(String type) {
+    AllowedFileType(String type) {
         this.type = type;
     }
 

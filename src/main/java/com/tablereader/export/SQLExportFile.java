@@ -1,8 +1,7 @@
-package com.tablereader.model.export;
+package com.tablereader.export;
 
 import com.tablereader.file.FileUtils;
 import com.tablereader.model.Field;
-
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,7 +25,6 @@ public class SQLExportFile extends AbstractExportFile {
             for (String[] strings : exportData.getTableData().getData()) {
                 String dataString = getDataString(strings);
                 String out = String.format(INSERT_TEMP, tableName, fieldsString, dataString);
-                //System.out.println(out);
                 fileWriter.write(out + "\r\n");
             }
         }
@@ -49,12 +47,12 @@ public class SQLExportFile extends AbstractExportFile {
     private String getDataString(String[] data) {
         String dataString = "";
         for (String sData : data) {
-            if(sData!=null) {
+            if (sData != null) {
                 String s = getShieldingString(sData.trim());
                 if (dataString.equals("")) {
-                    dataString = "\'" + s + "\'";
+                    dataString = "'" + s + "'";
                 } else {
-                    dataString += ",\'" + s + "\'";
+                    dataString += ",'" + s + "'";
                 }
             }
         }
@@ -62,8 +60,7 @@ public class SQLExportFile extends AbstractExportFile {
     }
 
     private String getFieldName(Field field) {
-        if (field==null || field.getName()==null)
-        {
+        if (field == null || field.getName() == null) {
             return "";
         }
         String[] s = field.getName().split(" ");
@@ -71,7 +68,9 @@ public class SQLExportFile extends AbstractExportFile {
     }
 
     private String getShieldingString(String inString) {
-        String outString = inString.replaceAll("'", "''").replaceAll("\"", "\"").replaceAll("&", "'||'&'||'");
+        String outString = inString.replaceAll("'", "''")
+                .replaceAll("\"", "\"")
+                .replaceAll("&", "'||'&'||'");
         return outString;
     }
 }

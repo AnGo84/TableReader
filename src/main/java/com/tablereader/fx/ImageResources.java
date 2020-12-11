@@ -3,10 +3,6 @@ package com.tablereader.fx;
 import com.tablereader.MainApp;
 import javafx.scene.image.Image;
 
-
-/**
- * Created by AnGo on 20.06.2017.
- */
 public class ImageResources {
 
     private static Image appIcon = new Image(MainApp.class.getResourceAsStream("/images/tableSync_32.png"));

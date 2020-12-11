@@ -1,8 +1,5 @@
 package com.tablereader.fx;
 
-/**
- * Created by AnGo on 05.06.2017.
- */
 public class DialogText {
     private String titleText;
     private String headerText;

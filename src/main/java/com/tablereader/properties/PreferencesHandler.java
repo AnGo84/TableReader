@@ -3,9 +3,6 @@ package com.tablereader.properties;
 import java.io.File;
 import java.util.prefs.Preferences;
 
-/**
- * Created by AnGo on 19.01.2018.
- */
 public class PreferencesHandler {
 
     public static final String LAST_FILE_PATH = "LAST_FILE_PATH";
@@ -62,14 +59,5 @@ public class PreferencesHandler {
             return "";
         }
     }
-
-
-//    public static GoogleAPIProject getGoogleAPIProject() {
-//        GoogleAPIProject googleAPIProject = new GoogleAPIProject();
-//        googleAPIProject.setUserName(getPreferenceString(MainApp.class, USER_NAME));
-//        googleAPIProject.setProjectName(getPreferenceString(MainApp.class, PROJECT_NAME));
-//        googleAPIProject.setPathToJson(getPreferenceFilePath(MainApp.class,JSON_FILE_PATH).getAbsolutePath());
-//        return googleAPIProject;
-//    }
 
 }

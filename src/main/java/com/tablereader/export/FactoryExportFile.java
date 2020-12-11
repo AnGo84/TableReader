@@ -1,4 +1,4 @@
-package com.tablereader.model.export;
+package com.tablereader.export;
 
 import com.tablereader.file.FileUtils;
 
@@ -10,7 +10,6 @@ public class FactoryExportFile {
             return null;
         }
         AbstractExportFile writer = null;
-        //System.out.println(FileUtils.getFileExtension(file).toUpperCase().equals(ExportFileType.TXT));
         if (FileUtils.getFileExtension(file).toUpperCase().equals(ExportFileType.TXT.toString())) {
             writer = new TXTExportFile();
         } else if (FileUtils.getFileExtension(file).toUpperCase().equals(ExportFileType.XLS.toString())) {

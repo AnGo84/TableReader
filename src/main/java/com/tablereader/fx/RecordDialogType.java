@@ -1,8 +1,5 @@
 package com.tablereader.fx;
 
-/**
- * Created by AnGo on 01.06.2017.
- */
 public enum RecordDialogType {
     FILTER("Filter"),
     EDIT("Edit");

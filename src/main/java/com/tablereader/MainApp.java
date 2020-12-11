@@ -20,9 +20,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by AnGo on 19.01.2018.
- */
 public class MainApp extends Application {
     private static final String APP_NAME = "TableReader";
 
@@ -53,7 +50,6 @@ public class MainApp extends Application {
             tableViewController.setTableData(tableFile.getTableData());
             tableViewController.fillTable();
         }
-
     }
 
     public Stage getPrimaryStage() {
@@ -104,8 +100,6 @@ public class MainApp extends Application {
             AnchorPane tableView = loader.load();
 
             mainView.setCenter(tableView);
-
-            //TableViewController controller = loader.getController();
             tableViewController = loader.getController();
             tableViewController.setMainApp(this);
 
@@ -134,7 +128,7 @@ public class MainApp extends Application {
             stage.getIcons().add(ImageResources.getAppIcon());
 
             stage.initModality(Modality.APPLICATION_MODAL);
-//            stage.initStyle(StageStyle.UNDECORATED);
+            // stage.initStyle(StageStyle.UNDECORATED);
 
             RowInfoViewController recordInfoController = fxmlLoader.getController();
             recordInfoController.setDialogStage(stage);
@@ -157,7 +151,7 @@ public class MainApp extends Application {
             stage.getIcons().add(ImageResources.getAppIcon());
 
             stage.initModality(Modality.APPLICATION_MODAL);
-//            stage.initStyle(StageStyle.UNDECORATED);
+            // stage.initStyle(StageStyle.UNDECORATED);
 
             TableFilterViewController filterController = fxmlLoader.getController();
             filterController.setDialogStage(stage);
@@ -182,7 +176,7 @@ public class MainApp extends Application {
             stage.getIcons().add(ImageResources.getAppIcon());
 
             stage.initModality(Modality.APPLICATION_MODAL);
-//            stage.initStyle(StageStyle.UNDECORATED);
+            // stage.initStyle(StageStyle.UNDECORATED);
 
             TableInfoViewController tableInfoController = fxmlLoader.getController();
             tableInfoController.setDialogStage(stage);

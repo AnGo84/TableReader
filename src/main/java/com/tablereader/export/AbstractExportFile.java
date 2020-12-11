@@ -1,4 +1,4 @@
-package com.tablereader.model.export;
+package com.tablereader.export;
 
 import java.io.IOException;
 

@@ -1,20 +1,20 @@
 package com.tablereader.controller;
 
 import com.tablereader.MainApp;
+import com.tablereader.export.AbstractExportFile;
+import com.tablereader.export.ExportData;
+import com.tablereader.export.ExportFileType;
+import com.tablereader.export.FactoryExportFile;
 import com.tablereader.file.FileUtils;
 import com.tablereader.fx.DialogText;
 import com.tablereader.fx.Dialogs;
 import com.tablereader.fx.ImageResources;
 import com.tablereader.model.TableData;
 import com.tablereader.model.TableFile;
-import com.tablereader.model.export.AbstractExportFile;
-import com.tablereader.model.export.ExportData;
-import com.tablereader.model.export.ExportFileType;
-import com.tablereader.model.export.FactoryExportFile;
-import com.tablereader.model.read.AbstractReader;
-import com.tablereader.model.read.FactoryReadFile;
-import com.tablereader.model.read.ReadFileType;
 import com.tablereader.properties.PreferencesHandler;
+import com.tablereader.reader.AbstractReader;
+import com.tablereader.reader.AllowedFileType;
+import com.tablereader.reader.FactoryReadFile;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,11 +39,9 @@ public class MainViewController {
     private static final Logger logger = LogManager.getLogger(MainViewController.class);
     private static final String FILTER_DESCRIPTION = "%s files (*.%s)";
     private static final String FILTER_EXTENSION = "*.%s";
+    private final List<FileChooser.ExtensionFilter> fileFilters = new ArrayList<>();
 
     private MainApp mainApp;
-
-    private List<FileChooser.ExtensionFilter> fileFilters = new ArrayList<>();
-
     @FXML
     private Menu menuExport;
     @FXML
@@ -85,8 +83,6 @@ public class MainViewController {
     }
 
     private void initButtonsIcons() {
-        //menuIcon.setFitHeight(20);
-        //menuIcon.setFitWidth(20);
         menuItemOpen.setGraphic(new ImageView(ImageResources.getMenuItemOpen()));
         menuItemExit.setGraphic(new ImageView(ImageResources.getMenuItemExit()));
         menuItemFilter.setGraphic(new ImageView(ImageResources.getButtonFilter()));
@@ -100,9 +96,8 @@ public class MainViewController {
     }
 
     private void initExtensionFilters() {
-        ReadFileType.values();
         List<String> extensions = new ArrayList<>();
-        for (ReadFileType type : ReadFileType.values()) {
+        for (AllowedFileType type : AllowedFileType.values()) {
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
                     String.format(FILTER_DESCRIPTION, type.getType().toUpperCase(), type.getType()), String.format(FILTER_EXTENSION, type.getType()));
             fileFilters.add(extFilter);
@@ -119,7 +114,6 @@ public class MainViewController {
         menuItemTableInfo.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN));
 
         //menuItemProperties.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
-
     }
 
     public void onMenuItemExit(ActionEvent actionEvent) {
@@ -133,21 +127,18 @@ public class MainViewController {
                 PreferencesHandler.LAST_FILE_PATH), fileFilters, mainApp.getPrimaryStage());
         if (file != null) {
             AbstractReader reader = new FactoryReadFile().getReader(file);
-            TableFile tableFile = null;
             try {
-                tableFile = reader.readTableFile(file);
+                TableFile tableFile = reader.readTableFile(file);
                 mainApp.setTableFile(tableFile);
 
                 elementDisableStates(!mainApp.tableHasData());
 
                 PreferencesHandler.setPreferenceFilePath(file, mainApp.getClass(), PreferencesHandler.LAST_FILE_PATH);
                 logger.info("Open file " + file.getAbsolutePath());
-            } catch (IOException e) {
+            } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
                 Dialogs.showErrorDialog(e, new DialogText("File reading", "", "Can't read file"), logger);
             }
-            /*Dialogs.showErrorDialog(e, new DialogText("File reading", "", "Can't define file encoding"), logger);
-            Dialogs.showErrorDialog(e, new DialogText("File reading", "", "Can't read file"), logger);*/
 
         }
     }
@@ -163,16 +154,20 @@ public class MainViewController {
 
     }
 
-    private ExportData getExportData() {
-        ExportData exportData;
+    private ExportData getExportData(File file) {
+        TableData tableData;
         if (mainApp.getTableViewController().getFilters() != null) {
-            TableData tableData = new TableData();
-            tableData.setData(mainApp.getTableViewController().getFilteredList());
-            tableData.setFields(mainApp.getTableFile().getTableData().getFields());
-            exportData = new ExportData(tableData);
+            tableData = TableData.builder()
+                    .fields(mainApp.getTableFile().getTableData().getFields())
+                    .data(mainApp.getTableViewController().getFilteredList())
+                    .build();
         } else {
-            exportData = new ExportData(mainApp.getTableFile().getTableData());
+            tableData = mainApp.getTableFile().getTableData();
         }
+        ExportData exportData = ExportData.builder()
+                .tableData(tableData)
+                .file(file)
+                .build();
         return exportData;
     }
 
@@ -184,16 +179,7 @@ public class MainViewController {
         }
     }
 
-
     private void exportData(ExportFileType exportFileType) {
-/*        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Run cursor");
-                mainApp.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-            }
-        });*/
-
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(exportFileType + " files",
                 "*." + exportFileType.getType().toLowerCase());
         String exportFileName = getExportFileName(FileUtils.getFileNameWithOutExt(mainApp.getTableFile().getFile().getName()));
@@ -203,8 +189,7 @@ public class MainViewController {
         if (file != null) {
             AbstractExportFile writer = new FactoryExportFile().getWriter(file);
 
-            ExportData exportData = getExportData();
-            exportData.setFile(file);
+            ExportData exportData = getExportData(file);
             try {
                 writer.write(exportData);
                 Dialogs.showMessage(Alert.AlertType.INFORMATION, new DialogText("File writing", "File '" + file.getAbsolutePath(),
@@ -213,19 +198,7 @@ public class MainViewController {
                 e.printStackTrace();
                 Dialogs.showErrorDialog(e, new DialogText("File writing", "", "Can't write file" + file.getName()), logger);
             }
- /*            finally {
-               Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        //getStage().getScene().setCursor(Cursor.DEFAULT);
-                        System.out.println("Stop cursor");
-                        mainApp.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
-                    }
-                });
-            }*/
         }
-
-
     }
 
     public void onMenuItemTXTExport(ActionEvent actionEvent) {

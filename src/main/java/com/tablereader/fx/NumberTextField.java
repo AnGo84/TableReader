@@ -2,9 +2,6 @@ package com.tablereader.fx;
 
 import javafx.scene.control.TextField;
 
-/**
- * Created by AnGo on 25.05.2017.
- */
 public class NumberTextField extends TextField {
     public NumberTextField() {
         this.setPromptText("Enter only numbers");

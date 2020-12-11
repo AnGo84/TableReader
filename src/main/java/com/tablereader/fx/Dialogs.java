@@ -18,9 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Created by AnGo on 07.03.2017.
- */
 public class Dialogs {
     /** Some tutorial and examples
      * http://code.makery.ch/blog/javafx-dialogs-official/
@@ -47,7 +44,7 @@ public class Dialogs {
     private static Alert getAlert(Alert.AlertType alertType, DialogText dialogText) {
         Alert alert = new Alert(alertType);
 
-//        alert.setGraphic(new ImageView(new Dialogs().DIALOG_ICON));
+        // alert.setGraphic(new ImageView(new Dialogs().DIALOG_ICON));
 
         alert.setTitle(dialogText.getTitleText());
         alert.setHeaderText(dialogText.getHeaderText());
@@ -146,19 +143,6 @@ public class Dialogs {
         List<FileChooser.ExtensionFilter> filters = new ArrayList<>();
         filters.add(extFilter);
         return openFileDialog(file, filters, stage);
-        /*
-        FileChooser fileChooser = new FileChooser();
-
-        //Open directory from existing directory
-        if (file != null && file.exists()) {
-            File existDirectory = file.getParentFile();
-            fileChooser.setInitialDirectory(existDirectory);
-        }
-        //Set extension filter
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        //Show open file dialog, with primaryStage blocked.
-        return fileChooser.showOpenDialog(stage);*/
     }
 
     public static File openFileDialog(File file, List<FileChooser.ExtensionFilter> filters , Stage stage) {
@@ -177,17 +161,6 @@ public class Dialogs {
     }
 
     public static File saveFileDialog(File file, FileChooser.ExtensionFilter extFilter, Stage stage) {
-       /* FileChooser fileChooser = new FileChooser();
-        //Open directory from existing directory
-        if (file != null && file.exists()) {
-            File existDirectory = file.getParentFile();
-            fileChooser.setInitialDirectory(existDirectory);
-        }
-        //Set extension filter
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        //Show open file dialog, with primaryStage blocked.
-        return fileChooser.showSaveDialog(stage);*/
        return saveFileDialog(null, file, extFilter, stage);
     }
 

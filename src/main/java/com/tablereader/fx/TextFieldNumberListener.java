@@ -6,9 +6,6 @@ import javafx.scene.control.TextField;
 
 import java.awt.*;
 
-/**
- * Created by AnGo on 31.05.2017.
- */
 public class TextFieldNumberListener implements ChangeListener<String> {
     private TextField textField;
 

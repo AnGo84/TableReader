@@ -12,10 +12,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-
-/**
- * Created by AnGo on 06.03.2017.
- */
 public class TableInfoViewController {
     @FXML
     private Label labelFile;

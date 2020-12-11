@@ -1,8 +1,5 @@
-package com.tablereader.model.export;
+package com.tablereader.export;
 
-/**
- * Created by AnGo on 05.03.2017.
- */
 public enum ExportFileType {
     TXT("TXT"), XLS("XLS"), XLSX("XLSX"), SQL("SQL");
 
